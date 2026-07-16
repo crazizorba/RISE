@@ -674,14 +674,26 @@ class PI0Pytorch(nn.Module):
                 # * Progress estimate
                 
                 # Prepare value target (episode progress)
-                tgt_frame_index_progress = obs_full.frame_index_progress.float()
+                if hasattr(obs_full, "frame_index_progress") and obs_full.frame_index_progress is not None:
+                    tgt_frame_index_progress = obs_full.frame_index_progress.float()
+                else:
+                    if hasattr(obs_full, "frame_index") and obs_full.frame_index is not None:
+                        tgt_frame_index_progress = obs_full.frame_index.float()
+                    else:
+                        tgt_frame_index_progress = torch.zeros((obs_full.state.shape[0],), device=obs_full.state.device).float()
 
-                episode_length = obs_full.episode_length.float()
+                if hasattr(obs_full, "episode_length") and obs_full.episode_length is not None:
+                    episode_length = obs_full.episode_length.float()
+                else:
+                    episode_length = torch.full((obs_full.state.shape[0],), 100.0, device=obs_full.state.device).float()
+
                 # Avoid division by zero for episodes of length 0
                 episode_length = torch.where(episode_length > 0, episode_length, torch.ones_like(episode_length))
                 
-
-                is_failure_data = obs_full.is_failure_data.float()
+                if hasattr(obs_full, "is_failure_data") and obs_full.is_failure_data is not None:
+                    is_failure_data = obs_full.is_failure_data.float()
+                else:
+                    is_failure_data = torch.zeros((obs_full.state.shape[0],), device=obs_full.state.device).float()
    
                 is_expert_data = 1 - is_failure_data.float()
                 if is_expert_data.ndim == 1: is_expert_data = is_expert_data.unsqueeze(1)

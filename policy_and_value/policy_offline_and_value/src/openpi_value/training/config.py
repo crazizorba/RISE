@@ -122,7 +122,7 @@ class ModelTransformFactory(GroupFactory):
                 return _transforms.Group(
                     inputs=[
                         _transforms.InjectDefaultPrompt(self.default_prompt), 
-                        _transforms.ResizeImages(182, 182),
+                        _transforms.ResizeImages(112, 112),
                         _transforms.TokenizePrompt(
                             _tokenizer.PaligemmaTokenizer(model_config.max_token_len),
                         ),
@@ -134,7 +134,7 @@ class ModelTransformFactory(GroupFactory):
                 return _transforms.Group(
                     inputs=[
                         _transforms.InjectDefaultPrompt(self.default_prompt),
-                        _transforms.ResizeImages(182, 182),
+                        _transforms.ResizeImages(112, 112),
                         _transforms.TokenizePrompt(
                             _tokenizer.PaligemmaTokenizer(model_config.max_token_len),
                             discrete_state_input=model_config.discrete_state_input,
@@ -155,7 +155,7 @@ class ModelTransformFactory(GroupFactory):
                 return _transforms.Group(
                     inputs=[
                         _transforms.InjectDefaultPrompt(self.default_prompt),
-                        _transforms.ResizeImages(182, 182),
+                        _transforms.ResizeImages(112, 112),
                         _transforms.TokenizeFASTInputs(
                             tokenizer_cls(model_config.max_token_len, **tokenizer_kwargs),
                         ),
@@ -532,6 +532,7 @@ _CONFIGS = [
         
         model=pi0_config.Pi0Config_Custom(
             pi05=True,
+            with_value_head=True,
             
             advantage_bins=10,
             freeze_vlm_backbone=True,
@@ -540,12 +541,12 @@ _CONFIGS = [
         
         data = LerobotCustomAgilexDataConfig(
             repo_id = [
-                "C:\\TONGHOPTRENLOP\\HK6\\ML\\Project\\lerobot_output_root\\svla_subset",
+                "C:/TONGHOPTRENLOP/HK6/ML/Project/RISE/policy_and_value/policy_offline_and_value/datasets/svla",
             ],
             
             assets=AssetsConfig(
                 assets_dir="data/norms",
-                asset_id="sample_dataset",
+                asset_id="svla",
             ),
             
             default_prompt="fold the box.",
@@ -570,13 +571,13 @@ _CONFIGS = [
         ),
         
         #pytorch_weight_path="path/to/ckpt",
-        pytorch_weight_path="checkpoints/Policy_offline_release/policy_local/100", 
+        #pytorch_weight_path="checkpoints/Policy_offline_release/policy_local/100", 
         
         # 2. BẬT chế độ chạy tiếp tục
-        resume=True,
-        num_train_steps=200,
+        resume=False,
+        num_train_steps=150,
         keep_period=20000,
-        save_interval=200,
+        save_interval=150,
         log_interval = 2,
         num_workers=0,
 
@@ -619,7 +620,7 @@ _CONFIGS = [
         data=LerobotCustomAgilexDataConfig(
 
             repo_id = [
-                "C:/TONGHOPTRENLOP/HK6/ML/Project/lerobot_output_root/svla_subset",
+                "C:/TONGHOPTRENLOP/HK6/ML/Project/RISE/policy_and_value/policy_offline_and_value/datasets/svla",
             ],
             
             assets=AssetsConfig(
@@ -658,13 +659,13 @@ _CONFIGS = [
             ]
             )
         ),
-        pytorch_weight_path="checkpoints/value_release/value_local/100",
-        resume=True,
+        #pytorch_weight_path="checkpoints/value_release/value_local/100",
+        resume=False,
         #pytorch_weight_path="path/to/ckpt",
 
-        num_train_steps=210,
+        num_train_steps=500,
         keep_period=20000,
-        save_interval=210,
+        save_interval=500,
         log_interval = 2,
         num_workers=0,
         batch_size=1,  # * 8 gpus

@@ -373,7 +373,10 @@ def main(
         return img
 
     observation0, _ = next(data_iter)
-    prev_frame_index = int(observation0.frame_index.item())
+    if hasattr(observation0, "frame_index") and observation0.frame_index is not None:
+        prev_frame_index = int(observation0.frame_index.item())
+    else:
+        prev_frame_index = 0
 
     episode_counter = 0
     value_frames = []  # type: list[float]
@@ -402,7 +405,10 @@ def main(
         if not metric_only and batch_cnt % fps_downsample != 0:
             continue
 
-        cur_frame_idx = int(observation.frame_index.item())
+        if hasattr(observation, "frame_index") and observation.frame_index is not None:
+            cur_frame_idx = int(observation.frame_index.item())
+        else:
+            cur_frame_idx = prev_frame_index + 1
 
         # New episode boundary
         if cur_frame_idx <= prev_frame_index:

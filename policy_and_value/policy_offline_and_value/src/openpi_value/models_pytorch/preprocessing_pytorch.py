@@ -12,7 +12,7 @@ logger = logging.getLogger("openpi")
 # Constants moved from model.py
 
 
-IMAGE_RESOLUTION = (182, 182)
+IMAGE_RESOLUTION = (112, 112)
 
 
 def preprocess_observation_pytorch(
